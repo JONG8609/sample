@@ -1,67 +1,84 @@
 package com.example.sample;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.View;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.text.Layout;
+import android.widget.LinearLayout;
 
+import com.example.sample.Util.WorkerProcess;
 import com.example.sample.databinding.ActivityMainBinding;
-
-import java.util.List;
+import com.example.sample.fragment.BatteryInFragment;
+import com.example.sample.fragment.BatteryOutFragment;
+import com.example.sample.fragment.EmergencyFragment;
+import com.example.sample.fragment.MainFragment;
+import com.example.sample.fragment.PaymentFragment;
 
 public class MainActivity extends AppCompatActivity {
 
+    private WorkerProcess workerProcess;
     private ActivityMainBinding binding;
-    EditText hello_et;
-    TextView hello_tv;
-    Button change_btn;
-    String a = "1";
+    private BatteryInFragment batteryInFragment;
+    private BatteryOutFragment batteryOutFragment;
+    private EmergencyFragment emergencyFragment;
+    private PaymentFragment paymentFragment;
+    private MainFragment mainFragment;
+    private FragmentManager fragmentManager;
+    LinearLayout main_layout;
+    public static int FRAGMENT_CHANGE = 1;
+    //0 -> mainFragment, 1 -> paymentFragment, 2 -> batteryInFragment, 3 -> batteryOutFragment, 4 -> emergencyFragment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        workerProcess = new WorkerProcess();
         dataBinding();
-        hello_tv = binding.hellotv;
-        hello_et = binding.helloEt;
-        change_btn = binding.changeBtn;
+        initialize();
+        changeFragment();
+
+    }
 
 
-//        a = MainActivity2.sample_et.getText().toString();
 
-        change_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, MainActivity2.class);
-                intent.putExtra("key1", "1");
-                intent.putExtra("key2", "2");
-                intent.putExtra("key3", "3");
-                startActivity(intent);
-            }
-        });
-
+    private void initialize() {
+        batteryInFragment = new BatteryInFragment();
+        batteryOutFragment = new BatteryOutFragment();
+        emergencyFragment = new EmergencyFragment();
+        paymentFragment = new PaymentFragment();
+        mainFragment = new MainFragment();
+        fragmentManager = getSupportFragmentManager();
     }
 
     private void dataBinding() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        main_layout = binding.mainLayout;
     }
-
+    private void changeFragment(){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if(FRAGMENT_CHANGE == 0){
+            transaction.replace(R.id.main_layout, mainFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }else if(FRAGMENT_CHANGE == 1){
+            transaction.replace(R.id.main_layout, paymentFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }else if(FRAGMENT_CHANGE == 2){
+            transaction.replace(R.id.main_layout, batteryInFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }else if(FRAGMENT_CHANGE == 3){
+            transaction.replace(R.id.main_layout, batteryOutFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }else if(FRAGMENT_CHANGE == 4){
+            transaction.replace(R.id.main_layout, emergencyFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+    }
 
 }

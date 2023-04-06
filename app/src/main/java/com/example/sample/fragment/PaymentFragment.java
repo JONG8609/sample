@@ -1,43 +1,88 @@
-package com.example.sample;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
+package com.example.sample.fragment;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
+import androidx.fragment.app.Fragment;
+
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.sample.databinding.ActivityMain2Binding;
+import com.example.sample.R;
+import com.example.sample.databinding.FragmentPaymentBinding;
 
-public class MainActivity2 extends AppCompatActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link PaymentFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class PaymentFragment extends Fragment {
 
-    private ActivityMain2Binding binding;
+    private FragmentPaymentBinding binding;
 
-    public EditText sample_et;
+
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
+    public PaymentFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment PaymentFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static PaymentFragment newInstance(String param1, String param2) {
+        PaymentFragment fragment = new PaymentFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
 
-        Intent intent = getIntent();
-        String value1 = intent.getStringExtra("key1");
-        String value2 = intent.getStringExtra("key2");
-        String value3 = intent.getStringExtra("key3");
+    }
 
-        dataBinding();
-        sample_et = binding.sampleEt;
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
-        waitingPopup();
+        binding = FragmentPaymentBinding.inflate(inflater, container, false);
+          View view = binding.getRoot();
+          EditText payment_et = view.findViewById(R.id.payment_et);
+
 
         TextWatcher textWatcher = new TextWatcher() {
             @Override
@@ -56,9 +101,9 @@ public class MainActivity2 extends AppCompatActivity {
                 /*
                 값에 의해 즉각적으로 다이얼로그가 뜨는지 테스트 하기위하여 1.2.3으로 if문 분기처리
                  */
-                if (sample_et.getText().toString().equals(value1)) {
+                if (payment_et.getText().toString().equals("1")) {
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity2.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
                     builder.setMessage("Hello, world!"); // Set the message text
 
                     AlertDialog dialog = builder.create(); // Create the dialog object
@@ -92,9 +137,9 @@ public class MainActivity2 extends AppCompatActivity {
                         }
                     }, 1000);
 
-                } else if (sample_et.getText().toString().equals(value2)) {
+                } else if (payment_et.getText().toString().equals("2")) {
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity2.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
                     builder.setMessage("Hello, world!"); // Set the message text
 
                     AlertDialog dialog = builder.create(); // Create the dialog object
@@ -122,9 +167,9 @@ public class MainActivity2 extends AppCompatActivity {
                         }
                     }, 1000);
 
-                } else if (sample_et.getText().toString().equals(value3)) {
+                } else if (payment_et.getText().toString().equals("3")) {
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity2.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
                     builder.setMessage("Hello, world!"); // Set the message text
 
                     AlertDialog dialog = builder.create(); // Create the dialog object
@@ -156,26 +201,9 @@ public class MainActivity2 extends AppCompatActivity {
             }
         };
 
-        sample_et.addTextChangedListener(textWatcher);
-    }
+        payment_et.addTextChangedListener(textWatcher);
 
-    private void waitingPopup(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity2.this);
-        builder.setMessage("NFC를 태깅 해주세요."); // Set the message text
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                dialog.dismiss();
-            }
-        }, 2000);
-    }
-
-    private void dataBinding() {
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main2);
+        // Inflate the layout for this fragment
+        return view;
     }
 }
